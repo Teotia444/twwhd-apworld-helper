@@ -37,6 +37,11 @@ int setHealth(char* payload, int payload_len, char client_msg[256]){
 int giveItem(char* payload, int payload_len, char client_msg[256]){
     int res = 0;
     if(*((uint8_t*)(DATA_OFFSET + DCOMIFG_DATA_INIT)) != 1) res = 1;
+    
+    char stage_name[8];
+    snprintf(stage_name, 8, "%s", (char*)CURR_STAGE_NAME_ADDR);
+    DEBUG_FUNCTION_LINE("current stage is %s", stage_name);
+    if(strcmp(stage_name, "") == 0 || strcmp(stage_name, "sea_T") == 0 || strcmp(stage_name, "Name") == 0) res = 2;
 
     if(res != 1){
         uint8_t value = atoi(&client_msg[1]);
