@@ -40,8 +40,25 @@ int read_msg(char *buf, int size) {
 	return recv(client_fd, buf, size, 0);
 }
 
+bool send_all_msg(const void* data, int size){
+    const char* buf = static_cast<const char*>(data);
+    while(size>0){
+        int sent = send(client_fd, (char*)buf, size, 0);
+        if(sent <= 0) return false;
+        buf += sent;
+        size -= sent;
+    }
+    return true;
+}
+
 int send_msg(char *buf, int size) {
-	return send(client_fd, buf, size, 0);
+    if(size < 0) return false;
+    int len = htonl(size);
+    // start with the 4 byte header
+    if(!send_all_msg(&len, sizeof(len))) return -1;
+    if(!send_all_msg(buf, size)) return -2;
+
+	return 0;
 }
 
 void serverTakedown() {

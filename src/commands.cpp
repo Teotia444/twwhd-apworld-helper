@@ -71,7 +71,7 @@ int updateStatus(char* payload, int payload_len, char client_msg[256]){
     
     std::array<uint8_t,8> charts_bitfield;
     
-    std::array<uint8_t,0xC5> story_flags; // anything past c5 is not used by the randomizer
+    std::array<uint8_t,0xff> story_flags;
     std::array<uint8_t,100> octo_flags; //capture 100 bytes before the story flags as those are used by big octo flags
 
     uint8_t mMode;
@@ -98,7 +98,7 @@ int updateStatus(char* payload, int payload_len, char client_msg[256]){
     curr_stage_pickups_bitfield = *reinterpret_cast<std::array<uint8_t,4>*>(CURR_STAGE_PICKUPS_BITFLD_ADDR);
 
     charts_bitfield = *reinterpret_cast<std::array<uint8_t,8>*>(CHARTS_BITFLD_ADDR);
-    story_flags = *reinterpret_cast<std::array<uint8_t,0xC5>*>(STORY_FLAGS_BASE_ADDR);
+    story_flags = *reinterpret_cast<std::array<uint8_t,0xff>*>(STORY_FLAGS_BASE_ADDR);
     octo_flags = *reinterpret_cast<std::array<uint8_t,100>*>(STORY_FLAGS_BASE_ADDR - 100);
     
     mMode = *((uint8_t*)DCOMIFG_M_MODE);
@@ -174,7 +174,7 @@ int updateStatus(char* payload, int payload_len, char client_msg[256]){
     client_output += "]";
 
     client_output += ", \"story_flags\": [";
-    for(int j = 0; j<0xc5; j++){
+    for(int j = 0; j<0xff; j++){
         if(j>0) client_output += ", ";
         client_output += std::to_string(story_flags[j]);
     }
