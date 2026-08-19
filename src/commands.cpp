@@ -101,7 +101,7 @@ int updateStatus(char* payload, int payload_len, char client_msg[256]){
     story_flags = *reinterpret_cast<std::array<uint8_t,0xff>*>(STORY_FLAGS_BASE_ADDR);
     octo_flags = *reinterpret_cast<std::array<uint8_t,100>*>(STORY_FLAGS_BASE_ADDR - 100);
     
-    mMode = *((uint8_t*)DCOMIFG_M_MODE);
+    mMode = *((uint8_t*)(DATA_OFFSET +DCOMIFG_M_MODE));
     curr_stage_idx = *((uint8_t*)CURR_STAGE_ID_ADDR);
     snprintf(stage_name, 8, "%s", (char*)CURR_STAGE_NAME_ADDR);
     health = *((uint16_t*)CURR_HEALTH_ADDR);
