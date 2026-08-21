@@ -28,6 +28,11 @@ INCLUDES	:=	src
 #-------------------------------------------------------------------------------
 # options for code generation
 #-------------------------------------------------------------------------------
+
+VERSION ?= Local Build
+VERSION_DATE ?= $(shell date +%Y-%m-%d)
+
+
 CFLAGS	:=	-g -Wall -O2 -ffunction-sections \
 			$(MACHDEP)
 
@@ -101,14 +106,21 @@ export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 
-.PHONY: $(BUILD) clean all
+.PHONY: version.h $(BUILD) clean all
 
 #-------------------------------------------------------------------------------
 all: $(BUILD)
 
+version.h:
+	@echo '#define VERSION "$(VERSION)"' > src/version.h
+	@echo '#define VERSION_DATE "$(VERSION_DATE)"' >> src/version.h
+
+
 $(BUILD):
 	@$(shell [ ! -d $(BUILD) ] && mkdir -p $(BUILD))
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
+
+
 
 #-------------------------------------------------------------------------------
 clean:

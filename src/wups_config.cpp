@@ -48,6 +48,12 @@ WUPSConfigAPICallbackStatus ConfigMenuOpenedCallback(WUPSConfigCategoryHandle ro
                 ipSettings, sizeof(ipSettings), "The console is not connected to a network.");
         }
         root.add(WUPSConfigItemStub::Create(ipSettings));
+        std::string version_date = "Version Date: ";
+        version_date += VERSION_DATE;
+        root.add(WUPSConfigItemStub::Create(version_date));
+        std::string version_tag = "Version Tag: ";
+        version_tag += VERSION;
+        root.add(WUPSConfigItemStub::Create(version_tag));
 
     } catch (std::exception &e) {
         return WUPSCONFIG_API_CALLBACK_RESULT_ERROR;

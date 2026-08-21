@@ -1,1 +1,2 @@
-#define VERSION "b1.1.0"
+#define VERSION "Local Build"
+#define VERSION_DATE "Unknown"
