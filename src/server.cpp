@@ -1,5 +1,6 @@
 #include <coreinit/thread.h>
 #include <thread>
+#include <notifications/notifications.h>
 #include <sys/socket.h>
 #include <poll.h>
 #include <arpa/inet.h>
@@ -81,6 +82,10 @@ void serverScope(std::stop_token stop){
     if(server_setup() != 0) return;
 
     while (!stop.stop_requested()){
+        uint32_t hostIpAddress = 0;
+        nn::ac::GetAssignedAddress(&hostIpAddress);
+        if(hostIpAddress == 0) break;
+
         pfd = {
             .fd = server_fd,
             .events = POLLIN
@@ -97,6 +102,10 @@ void serverScope(std::stop_token stop){
             .events = POLLIN
         };
         while (!stop.stop_requested()) {
+            hostIpAddress = 0;
+            nn::ac::GetAssignedAddress(&hostIpAddress);
+            if(hostIpAddress == 0) break;
+
             if(poll(&pfd, 1, 100) <= 0) continue;
 
             if ((client_len = read_msg(client_msg, 256)) <= 0) {
@@ -142,4 +151,7 @@ void serverScope(std::stop_token stop){
         }
     }
     serverTakedown();
+    if(!stop.stop_requested()) {
+        NotificationModule_AddInfoNotification("Warning: lost connection to your wifi network. Restart your Wii U!");
+    }
 }
