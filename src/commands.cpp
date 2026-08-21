@@ -37,15 +37,24 @@ int setHealth(char* payload, int payload_len, char client_msg[256]){
 int giveItem(char* payload, int payload_len, char client_msg[256]){
     int res = 0;
     if(*((uint8_t*)(DATA_OFFSET + DCOMIFG_DATA_INIT)) != 1) res = 1;
-    
+
+    if(*((uint8_t*)(DATA_OFFSET + DCOMIFG_ITEM_BYTE)) != 0xFF) res = 3;
+
+
     char stage_name[8];
     snprintf(stage_name, 8, "%s", (char*)CURR_STAGE_NAME_ADDR);
     DEBUG_FUNCTION_LINE("current stage is %s", stage_name);
     if(strcmp(stage_name, "") == 0 || strcmp(stage_name, "sea_T") == 0 || strcmp(stage_name, "Name") == 0) res = 2;
-    if(*((uint8_t*)(DATA_OFFSET + DCOMIFG_ITEM_BYTE)) != 0xFF) res = 3;
+    snprintf(stage_name, 8, "%s", (char*)NEXT_STAGE_NAME_ADDR);
+    DEBUG_FUNCTION_LINE("next stage is %s", stage_name);
+    if(strcmp(stage_name, "") == 0 || strcmp(stage_name, "sea_T") == 0 || strcmp(stage_name, "Name") == 0) res = 2;
+
+    DEBUG_FUNCTION_LINE("checking link's ptr next");
+    if(*((uint32_t*)(DATA_OFFSET + LINK_PTR)) == 0) res = 2;
 
 
-    if(res != 1){
+
+    if(res == 0){
         uint8_t value = atoi(&client_msg[1]);
         *((uint8_t*)(DATA_OFFSET + DCOMIFG_ITEM_BYTE)) = value;
         DEBUG_FUNCTION_LINE("recieved item id 0x%02X", value);
