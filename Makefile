@@ -109,12 +109,12 @@ export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
 .PHONY: version.h $(BUILD) clean all
 
 #-------------------------------------------------------------------------------
-all: $(BUILD)
+
+all: version.h $(BUILD)
 
 version.h:
 	@echo '#define VERSION "$(VERSION)"' > src/version.h
 	@echo '#define VERSION_DATE "$(VERSION_DATE)"' >> src/version.h
-
 
 $(BUILD):
 	@$(shell [ ! -d $(BUILD) ] && mkdir -p $(BUILD))
